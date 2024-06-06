@@ -15,7 +15,7 @@ namespace CryptoCurr
     {
         private bool toggle_start = false;
         //private List<decimal> prices = new List<decimal> {};
-        private List<Currency> Currencies { get; set; }
+        private List<Currency> Currencies { get; set; } = new List<Currency>();
     
         public Form1()
         {
@@ -26,9 +26,10 @@ namespace CryptoCurr
 
         private void start_btn_Click(object sender, EventArgs e)
         {
+            start_btn.Text = toggle_start ? "Start watching" : "Stop watching";
             toggle_start = !(toggle_start is true);
-            start_btn.Text = toggle_start ?"Stop watching": "Start watching";
-            PollPrices("BTC.USDT");
+            PollPrices(this.comboBox1.Text);
+            
         }
 
         private async void PollPrices(string ticker)
@@ -39,13 +40,20 @@ namespace CryptoCurr
                 new BybitClient(),
                 new KucoinClient(),
             } : null;
+            if ((from c in Currencies select c.Ticker).Count() == 0){
+                Currencies.Add(null);
+            }
 
             while (toggle_start)
             {   
                 foreach (IClient client in clients){
                     client.CheckPrice(ticker);
+                    
                 }
-                
+                Currencies[0] = new Currency(
+                    clients[0].Price, clients[1].Price, clients[2].Price, clients[3].Price, ticker
+                );
+                dataGridView1.DataSource = new BindingList<Currency>(Currencies);
                 await Task.Delay(5000);
             }
         }
