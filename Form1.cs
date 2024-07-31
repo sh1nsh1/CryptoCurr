@@ -28,6 +28,7 @@ namespace CryptoCurr
         {
             start_btn.Text = toggle_start ? "Start watching" : "Stop watching";
             toggle_start = !(toggle_start is true);
+            this.comboBox1.Enabled = !(toggle_start is true);
             PollPrices(this.comboBox1.Text);
             
         }
@@ -40,6 +41,7 @@ namespace CryptoCurr
                 new BybitClient(),
                 new KucoinClient(),
             } : null;
+
             if ((from c in Currencies select c.Ticker).Count() == 0){
                 Currencies.Add(null);
             }
