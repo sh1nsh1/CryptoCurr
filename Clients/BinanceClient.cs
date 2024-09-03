@@ -22,7 +22,7 @@ namespace CryptoCurr
             var res = await client.SpotApi.ExchangeData.GetTickerAsync(
                 NormalizeTicker(ticker)
                 );
-            this.Price = res.Data.LastPrice;
+            this.Price = Math.Round((decimal)res.Data.LastPrice, 2);
         }
 
         public string NormalizeTicker(string ticker)
